@@ -1,0 +1,32 @@
+{% if meta %}
+  <title>{{ meta.meta_title }}</title>
+  <meta name="description" content="{{ meta.meta_description }}">
+  {% if meta.meta_keywords %}
+    <meta name="keywords" content="{{ meta.meta_keywords }}">
+  {% endif %}
+  {% if meta.robots_noindex %}
+    <meta name="robots" content="noindex, nofollow">
+  {% else %}
+    <meta name="robots" content="index, follow">
+  {% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if meta.og_title %}{{ meta.og_title }}{% else %}{{ meta.meta_title }}{% endif %}">
+  <meta property="og:description" content="{% if meta.og_description %}{{ meta.og_description }}{% else %}{{ meta.meta_description }}{% endif %}">
+  {% if meta.og_image %}
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ meta.og_image.url }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  {% endif %}
+  <meta name="theme-color" content="{{ meta.theme_color }}">
+  <meta name="msapplication-TileColor" content="{{ meta.theme_color }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if meta.og_title %}{{ meta.og_title }}{% else %}{{ meta.meta_title }}{% endif %}">
+  <meta name="twitter:description" content="{% if meta.og_description %}{{ meta.og_description }}{% else %}{{ meta.meta_description }}{% endif %}">
+  {% if meta.og_image %}
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ meta.og_image.url }}">
+  {% endif %}
+{% else %}
+  <title>Храм Сутінків — Just Fun</title>
+  <meta name="description" content="База ресурсів Храму Сутінків для QuantPW — фанатський проект Just Fun">
+  <meta name="theme-color" content="#FFD700">
+{% endif %}
