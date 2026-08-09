@@ -50,12 +50,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'temple_project.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# --- DATABASES ---
+if os.getenv("DATABASE_URL"):
+    # Якщо підключиш Postgres (Neon/Supabase) - буде працювати
+    DATABASES = {
+        "default": dj_database_url.parse(os.getenv("DATABASE_URL"), conn_max_age=600)
     }
-}
+elif os.getenv("VERCEL") == "1":
+    # На Vercel SQLite ТІЛЬКИ в /tmp
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': '/tmp/db.sqlite3',
+        }
+    }
+else:
+    # Локально як було
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = []
 LANGUAGE_CODE = 'uk'
@@ -73,9 +89,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- 3.3 БЛОК ДЛЯ VERCEL ---
-if os.getenv("DATABASE_URL"):
-    DATABASES["default"] = dj_database_url.parse(os.getenv("DATABASE_URL"), conn_max_age=600)
-
-if os.getenv("VERCEL"):
+if os.getenv("VERCEL") == "1":
     DEBUG = False
     SECRET_KEY = os.getenv("SECRET_KEY", SECRET_KEY)
+    # Важливо для whitenoise
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
